@@ -407,11 +407,13 @@ def main() -> None:
 
     ds_fit = lgb.Dataset(Xflat[fit_mask], yflat[fit_mask])
     ds_cal = lgb.Dataset(Xflat[cal_mask], yflat[cal_mask], reference=ds_fit)
+    t_stage1 = time.time()
     booster = lgb.train(params, ds_fit, num_boost_round=max_rounds, valid_sets=[ds_cal],
                         callbacks=[lgb.early_stopping(150, verbose=False),
                                    lgb.log_evaluation(500)])
+    stage1_secs = max(time.time() - t_stage1, 1e-6)
     best_iter = booster.best_iteration or max_rounds
-    log("stage-1 done: best_iteration=%d" % best_iter)
+    log("stage-1 done: best_iteration=%d (%.0fs)" % (best_iter, stage1_secs))
 
     # out-of-sample predictions on the calibration cases
     P_cal = booster.predict(Xflat[cal_mask], num_iteration=best_iter).reshape(
@@ -445,10 +447,14 @@ def main() -> None:
     # ---- refit on ALL training cases with the discovered round count ----------------------
     remaining = TOTAL_BUDGET_S - elapsed()
     predict_iter = best_iter                       # stage-1 model is truncated at best_iteration
-    if remaining > 600:
-        rounds_full = max(200, int(best_iter * 1.1))
-        log("stage-2 refit on all %d training cases (%d rounds, %.0fs left)"
-            % (n_train, rounds_full, remaining))
+    # Duration-aware gate: stage 2 sees ~33% more rows than stage 1, so estimate its cost from the
+    # measured stage-1 cost instead of assuming a fixed headroom. Refit only if it comfortably fits.
+    per_round = stage1_secs / max(best_iter, 1)
+    rounds_full = max(200, int(best_iter * 1.1))
+    est_refit = per_round * rounds_full * (n_train / max(len(fit_cases), 1)) * 1.15
+    if remaining > est_refit + 300:
+        log("stage-2 refit on all %d training cases (%d rounds, est %.0fs, %.0fs left)"
+            % (n_train, rounds_full, est_refit, remaining))
         ds_all = lgb.Dataset(Xflat, yflat)
         booster = lgb.train(params, ds_all, num_boost_round=rounds_full)
         predict_iter = rounds_full                 # no valid set here, so use every tree
@@ -488,12 +494,12 @@ def main() -> None:
     assert sub["case_id"].str.len().gt(0).all(), "blank case_id"
     assert sub["window_schedule"].str.len().le(15).all(), "schedule too long"
     assert sub["observability_matrix"].str.len().le(220).all(), "matrix too long"
-    for s in sub["window_schedule"].values[:200]:
+    for s in sub["window_schedule"].values:
         toks = s.split("|")
         assert len(toks) == 3 and len(set(toks)) == 3
         assert all(t[0] == "w" and 0 <= int(t[1:]) <= 11 for t in toks)
-    chk = np.stack([np.asarray(json.loads(s)) for s in sub["observability_matrix"].values[:200]])
-    assert chk.shape[1:] == (6, 6)
+    chk = np.stack([np.asarray(json.loads(s)) for s in sub["observability_matrix"].values])
+    assert chk.shape == (len(sub), 6, 6)
     assert (np.diagonal(chk, axis1=1, axis2=2) == 0).all(), "non-zero diagonal"
     assert (chk == np.transpose(chk, (0, 2, 1))).all(), "asymmetric matrix"
     off = chk[:, PAIRS[:, 0], PAIRS[:, 1]]
