@@ -1,8 +1,0 @@
-name: Aneurysm Volume Prediction
-difficulty: medium
-domain: vision
-
-grade:
-  direction: maximize
-  minimum: 0
-  maximum: 1

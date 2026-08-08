@@ -1,8 +1,0 @@
-name: Intraday Liquidity Forecasting
-difficulty: medium
-domain: tabular
-
-grade:
-  direction: minimize
-  minimum: 0.0
-  maximum: 200.0
