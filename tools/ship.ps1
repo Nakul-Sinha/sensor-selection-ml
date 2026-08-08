@@ -6,7 +6,7 @@ outcome: branch, commit, push, open a PR, then squash-merge and delete the branc
 
 Usage:
     pwsh tools/ship.ps1 -Title "short title" -Body "what changed and why"
-    pwsh tools/ship.ps1 -Title "..." -Body "..." -Paths "Challenge1/solution.py","Challenge1/FINDINGS.md"
+    pwsh tools/ship.ps1 -Title "..." -Body "..." -Paths "path/one.py","path/two.md"
 
 If -Paths is omitted, every pending change is included.
 #>
@@ -14,7 +14,7 @@ param(
     [Parameter(Mandatory = $true)][string]$Title,
     [string]$Body = "",
     [string[]]$Paths,
-    [string]$Repo = "Nakul-Sinha/eris-challenges"
+    [string]$Repo = "Nakul-Sinha/sensor-selection-ml"
 )
 
 $ErrorActionPreference = "Stop"
@@ -53,12 +53,10 @@ if ($bad) {
 
 $msg = $Title
 if ($Body) { $msg = "$Title`n`n$Body" }
-$msg = "$msg`n`nCo-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 git commit -q -m $msg
 git push -q -u origin $branch
 
 $prBody = if ($Body) { $Body } else { $Title }
-$prBody = "$prBody`n`n🤖 Generated with [Claude Code](https://claude.com/claude-code)"
 gh pr create --repo $Repo --base main --head $branch --title $Title --body $prBody | Out-Null
 gh pr merge --repo $Repo $branch --squash --delete-branch | Out-Null
 

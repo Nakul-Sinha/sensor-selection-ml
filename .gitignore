@@ -1,5 +1,5 @@
 # ==========================================================================
-# SECRETS — never commit these
+# Secrets. Never commit these.
 # ==========================================================================
 Shipd credentials/
 **/_brave_cookies.json
@@ -13,18 +13,20 @@ Shipd credentials/
 .env.*
 
 # ==========================================================================
-# Large data — challenge datasets are hundreds of MB, keep them out of git
+# Everything that is not working code or the README stays local:
+# reference material, notes, data, and build output.
 # ==========================================================================
-Challenge1/dataset/
-Challenge1/dataset.zip
-Challenge1/cache/
+Challenge1/
+eris-guidebook/
+Exemplary submission/
+
 *.zip
 *.npy
 *.nii.gz
 **/response_packets/
-
-# scraping scratch from the earlier extraction work
-Exemplary submission/**/_agent_tools/
+**/dataset/
+**/cache/
+**/working/
 
 # ==========================================================================
 # Python
@@ -37,7 +39,7 @@ venv/
 .ipynb_checkpoints/
 
 # ==========================================================================
-# OS / editor
+# OS and editor
 # ==========================================================================
 Thumbs.db
 desktop.ini

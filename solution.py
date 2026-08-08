@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Bridge Sensor Window Selection and Observability Matrix Prediction
-==================================================================
+Sensor window selection and separability matrix prediction
+===========================================================
 
 Run as:  python3 solution.py <public_dir> <submission_out>
 
@@ -29,8 +29,8 @@ Pipeline (everything below is fit at run time, from raw data, every run):
   4. Evaluate the published utility over all C(12,3)=220 plans and submit the arg-max.
   5. Bucket the 15 pair distances of that plan with the published thresholds to build the matrix.
 
-COMPLIANCE NOTES (Eris guidebook)
----------------------------------
+COMPLIANCE NOTES (competition rulebook)
+---------------------------------------
 * Real supervised training happens INSIDE this script (guidebook 1.1 / 4.2.1). Strip the model out
   and nothing can be produced: test.csv carries only case_id, a packet path and a fixed contract
   string, so without the learned tile->response map there is no R_hat and no downstream step runs.
