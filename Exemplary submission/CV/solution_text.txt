@@ -1,0 +1,32 @@
+Docs
+Examples
+Aneurysm Volume Prediction
+Aneurysm Volume Prediction
+
+Predict intracranial aneurysm volume from 3D MRI patches using segmentation. A medical imaging challenge with only 49 training cases.
+
+EXEMPLARY
+segmentation
+3d-medical
+regression
+small-data
+Dataset
+Problem
+Solution
+Score:
+0.86
+SOLUTION CODE
+Docs
+python
+
+The solution uses a lightweight 3D UNet (base=16) — a deliberate choice for the small dataset. Data augmentation via random flips and rotations effectively multiplies the training data. The volume calculation correctly multiplies voxel counts by per-patient voxel spacing from the NIfTI header, achieving 0.857 volumetric similarity.
+
+OUTPUT FILES
+Files
+solution.ipynb
+15 KB
+working/unet3d_best.pt
+1.2 MB
+submission.csv
+1 KB
+Back to all examples

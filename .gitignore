@@ -1,0 +1,46 @@
+# ==========================================================================
+# SECRETS — never commit these
+# ==========================================================================
+Shipd credentials/
+**/_brave_cookies.json
+**/*cookies*.json
+**/*credential*
+**/*secret*
+**/*token*
+*.pem
+*.key
+.env
+.env.*
+
+# ==========================================================================
+# Large data — challenge datasets are hundreds of MB, keep them out of git
+# ==========================================================================
+Challenge1/dataset/
+Challenge1/dataset.zip
+Challenge1/cache/
+*.zip
+*.npy
+*.nii.gz
+**/response_packets/
+
+# scraping scratch from the earlier extraction work
+Exemplary submission/**/_agent_tools/
+
+# ==========================================================================
+# Python
+# ==========================================================================
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# ==========================================================================
+# OS / editor
+# ==========================================================================
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,80 @@
+Shipd
+/
+eris
+Create
+· $400–$500
+Home
+Leaderboard
+Payouts
+Docs
+Nakul Sinha
+Docs
+Examples
+Notebook Upvote Prediction
+Notebook Upvote Prediction
+
+Predict Kaggle notebook upvote counts from metadata including author stats, code metrics, and text features. A tabular regression problem with diverse feature types.
+
+EXEMPLARY
+regression
+tabular
+feature-engineering
+text
+Dataset
+Problem
+Solution
+Score:
+1.06
+SOLUTION CODE
+Docs
+python
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+import sys
+from pathlib import Path
+import pandas as pd
+import numpy as np
+import datetime
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import (
+    StandardScaler, OneHotEncoder, MultiLabelBinarizer, OrdinalEncoder
+)
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+public_dir = Path(sys.argv[1])
+submission_out = Path(sys.argv[2])
+# Load data
+train = pd.read_csv(public_dir / 'train.csv')
+test = pd.read_csv(public_dir / 'test.csv')
+# Remove target leakage columns (engagement metrics not available at creation time)
+
+The solution methodically addresses each feature type: StandardScaler for numerics, OneHotEncoder for categoricals, datetime conversion for dates, MultiLabelBinarizer for pipe-separated values, and TF-IDF for text. Training on log-transformed targets directly matches the evaluation metric, achieving a MAE of 1.061 in log space.
+
+OUTPUT FILES
+Files
+solution.ipynb
+28 KB
+submission.csv
+140 KB
+Back to all examples
